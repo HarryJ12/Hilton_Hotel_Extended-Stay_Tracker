@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <h1>Extended Stay Tracker</h1>
+</head>
+  <style>
+    li {
+      margin-bottom: 20px;
+    }
+  </style>
+<body>
+  <h2 style="margin-top: 50px;">Add Guests</h2>
+  <form id="guestForm">
+    <input placeholder="Name" id="name" required />
+    <input placeholder="Contact Information" id="contact" required />
+    <input placeholder="Room #" id="room" required />
+    <input placeholder="Rate" id="rate" required />
+    <input type="date" id="checkin" required />
+    <button>Add</button>
+  </form>
+
+  <h2 style="margin-top: 50px;">Guests</h2>
+  <ul id="guestList"></ul>
+
+  <script src="app.js"></script>
+</body>
+</html>
