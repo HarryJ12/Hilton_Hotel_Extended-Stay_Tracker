@@ -18,7 +18,6 @@ func deleteGuest(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		// 2. delete guest
 		res, err := db.Exec("DELETE FROM guests WHERE id = ?", id)
 		if err != nil {
 			c.JSON(500, gin.H{"error": "db error"})

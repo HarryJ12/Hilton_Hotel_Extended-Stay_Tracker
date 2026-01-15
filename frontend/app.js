@@ -1,5 +1,5 @@
 async function loadGuests() {
-  // const res = await fetch("http://localhost:8080/guests");
+  // const res = await fetch("http://localhost:8080/guests"); // for local testing
   const res = await fetch("/guests");
   const guests = await res.json();
 
@@ -21,7 +21,7 @@ async function loadGuests() {
   delBtn.style.marginTop = "3px";  
 
     delBtn.onclick = async () => {
-      // const res = await fetch(`http://localhost:8080/guests/${g.id}`, {
+      // const res = await fetch(`http://localhost:8080/guests/${g.id}`, { // for local testing
       const res = await fetch(`/guests/${g.id}`, {
         method: "DELETE"
       });
@@ -42,7 +42,7 @@ async function loadGuests() {
 document.getElementById("guestForm").addEventListener("submit", async e => {
   e.preventDefault();
 
-  // await fetch("http://localhost:8080/guests", {
+  // await fetch("http://localhost:8080/guests", { // for local testing
   await fetch("/guests", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

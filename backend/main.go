@@ -31,6 +31,7 @@ func main() {
 		c.File("../frontend/index.html")
 	})
 
+	// ----- CORS FOR LOCAL TESTING ONLY - IGNORE ----
 	// r.Use(cors.New(cors.Config{
 	// 	AllowOrigins:     []string{"http://localhost:5500"},
 	// 	AllowMethods:     []string{"GET", "POST", "DELETE", "OPTIONS"},
@@ -39,6 +40,7 @@ func main() {
 	// 	AllowCredentials: false,
 	// 	MaxAge:           12 * time.Hour,
 	// }))
+	// -----------------------------------------------
 
 	r.POST("/guests", createGuest(db))
 	r.GET("/guests", getGuests(db))
