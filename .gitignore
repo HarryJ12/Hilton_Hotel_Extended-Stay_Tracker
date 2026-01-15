@@ -1,7 +1,16 @@
-# SQLite
+# SQLite runtime files
 *.db
 *.db-shm
 *.db-wal
 
-# OS junk
+# Go binaries
+backend/extended-stay
+
+# Environment variables
+.env
+.env.*
+
+# OS / editor junk
 .DS_Store
+.vscode/
+.idea/
