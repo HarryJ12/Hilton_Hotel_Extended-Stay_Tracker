@@ -2,7 +2,7 @@
 
 A lightweight internal web application that helps hotel managers reliably track extended-stay guests and receive **weekly billing reminders**.
 
-## Why This Exists
+## Usage
 
 At Hilton properties, **hospitality and customer-experience policies restrict the use of repeated billing reminders** for extended-stay guests.
 
