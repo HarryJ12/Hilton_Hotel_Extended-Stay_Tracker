@@ -50,6 +50,13 @@ No policy violations and no missed billing.
     - Unattended, long-running operation
 
 - **Environment-Based Configuration** ensures sensitive configuration is loaded from a secure environment file and attached to the `systemd` service so it is not exposed.
+    - Example environment file:
+    
+        ```
+        BREVO_API_KEY=your_key_here
+        EMAIL_FROM=your_email_here
+        MANAGER_EMAIL=your_email_here
+        ```
 
 - **GitHub Actions (Auto-Deploy):** Every push to the `main` branch triggers a deployment workflow that:
     
@@ -94,13 +101,6 @@ This setup provides a simple, secure, and restart-safe deployment pipeline
 ### Environment Variables
 
 Add the environment variables to your `~/.zshrc` file so they are automatically loaded in every terminal session.
-    - Example environment file:
-    
-        ```
-        BREVO_API_KEY=your_key_here
-        EMAIL_FROM=your_email_here
-        MANAGER_EMAIL=your_email_here
-        ```
 
 ```bash
 nano ~/.zshrc
