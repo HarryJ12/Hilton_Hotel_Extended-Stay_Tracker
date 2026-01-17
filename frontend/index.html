@@ -1,42 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Extended Stay Tracker</title> <!-- App title shown in browser tab -->
-  <h1>Extended Stay Tracker</h1> <!-- Main page heading -->
+  <meta charset="UTF-8" />
+  <title>Extended Stay Tracker</title>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    /* Page layout */
+    .page {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1; /* pushes footer to bottom */
+      padding: 20px;
+    }
+
+    li {
+      margin-bottom: 20px; /* spacing between guest entries */
+    }
+
+    footer {
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
-<style>
-  li {
-    margin-bottom: 20px; /* Add spacing between guest list items for readability */
-
-  }
-</style>
-
 <body>
-  <!-- Section: Form to add a new guest -->
-  <h2 style="margin-top: 50px;">Add Guests</h2> <!-- Subheading for the form -->
-  <form id="guestForm"> 
-    <!-- Input fields for guest details -->
-    <input placeholder="Name" id="name" required /> <!-- Name field -->
-    <input placeholder="Contact Information" id="contact" required /> <!-- Contact information field -->
-    <input placeholder="Room #" id="room" required /> <!-- Room number field -->
-    <input placeholder="Daily Rate" id="rate" required /> <!-- Daily rate field -->
-    <input type="date" id="checkin" required /> <!-- Check-in date field -->
-    <button>Add</button> <!-- Submit button -->
-  </form>
+  <div class="page">
 
-  <!-- Section: List of current guests -->
-  <h2 style="margin-top: 50px;">Guests</h2>
-  <ul id="guestList"></ul>  <!-- Guest entries injected -->
+    <main>
+      <!-- App title -->
+      <h1>Extended Stay Tracker</h1>
 
-  <!-- Footer: support contact -->
-  <footer>
-    For support contact: <a href="mailto:billing.notifications44@gmail.com">billing.notifications44@gmail.com</a>
-  </footer>
+      <!-- Section: Form to add a new guest -->
+      <h2 style="margin-top: 50px;">Add Guests</h2>
 
-  <!-- Load frontend logic -->
-  <!-- <script src="app.js"></script> --> <!-- For local development -->
+      <form id="guestForm">
+        <input placeholder="Name" id="name" required />
+        <input placeholder="Contact Information" id="contact" required />
+        <input placeholder="Room #" id="room" required />
+        <input placeholder="Daily Rate" id="rate" required />
+        <input type="date" id="checkin" required />
+        <button>Add</button>
+      </form>
+
+      <!-- Section: List of current guests -->
+      <h2 style="margin-top: 50px;">Guests</h2>
+      <ul id="guestList"></ul>
+    </main>
+
+    <!-- Footer: support contact -->
+    <footer>
+      For support contact:
+      <a href="mailto:billing.notifications44@gmail.com">
+        billing.notifications44@gmail.com
+      </a>
+    </footer>
+
+  </div>
+
+  <!-- Frontend logic -->
+  <!-- <script src="app.js"></script> -->
   <script src="/static/app.js"></script>
 </body>
 
