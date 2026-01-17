@@ -1,182 +1,184 @@
-Extended Stay Tracker
+# Extended Stay Tracker
 
-A lightweight internal web application that helps hotel managers reliably track extended-stay guests and receive weekly billing reminders without violating hospitality policies.
+A lightweight internal web application that helps hotel managers reliably track extended-stay guests and receive **weekly billing reminders** without violating hospitality policies.
 
-Why This Exists (The Real Problem)
 
-At Hilton properties, extended-stay guests cannot be bombarded with billing reminders due to hospitality standards and customer experience policies.
+
+## Why This Exists (The Real Problem)
+
+At Hilton properties, extended-stay guests **cannot be bombarded with billing reminders** due to hospitality standards and customer experience policies.
 
 That creates a real operational problem:
 
-Extended-stay guests must be billed on a weekly cadence
+- Extended-stay guests must be billed on a **weekly cadence**
+- Managers are juggling dozens of guests across different check-in dates
+- Missing a billing window = revenue leakage
+- Manual reminders (notes, spreadsheets, memory) are unreliable
 
-Managers are juggling dozens of guests across different check-in dates
-
-Missing a billing window = revenue leakage
-
-Manual reminders (notes, spreadsheets, memory) are unreliable
-
-This app solves that by shifting reminders away from guests and onto the manager.
+**This app solves that by shifting reminders away from guests and onto the manager.**
 
 The system:
 
-Tracks extended-stay guests internally
-
-Calculates how many weeks each guest has stayed
-
-Sends a single, guaranteed, once-per-week email reminder to the manager
-
-Never contacts the guest directly
+- Tracks extended-stay guests internally
+- Calculates how many weeks each guest has stayed
+- Sends a **single, guaranteed, once-per-week email reminder** to the manager
+- Never contacts the guest directly
 
 No guest spam. No policy violations. No missed billing.
 
-High-Level Architecture
+---
 
-Backend
+## High-Level Architecture
 
-Go (Gin framework)
+**Backend**
 
-SQLite database
+- Go (Gin framework)
+- SQLite database
+- Background agent running every 24 hours
+- Email delivery via Brevo (HTTP API)
 
-Background agent running every 24 hours
+**Frontend**
 
-Email delivery via Brevo (HTTP API)
+- Plain HTML + JavaScript
+- Served directly by the Go backend
+- No framework, no build step, no nonsense
 
-Frontend
+**Deployment**
 
-Plain HTML + JavaScript
+- DigitalOcean Droplet (Linux)
+- Go binary managed by `systemd`
+- Environment variables stored outside GitHub
+- GitHub Actions used for auto-deploy on `main`
 
-Served directly by the Go backend
+---
 
-No framework, no build step, no nonsense
+## How It Works (End-to-End)
 
-Deployment
+1. Manager adds an extended-stay guest through the web UI
+2. Guest data is stored in SQLite (`guests` table)
+3. A background agent:
+    - Runs on startup
+    - Runs every 24 hours after that
+4. For each guest, the agent:
+    - Computes weeks stayed from check-in date
+    - Checks if a reminder for that week already exists
+    - Sends **exactly one email per guest per week**
+    - Records the send in a `notifications` table to prevent duplicates
+5. Manager receives a clean billing reminder email with:
+    - Guest name
+    - Room number
+    - Weeks stayed
+    - Daily rate
+    - Contact info
 
-DigitalOcean Droplet (Linux)
+This design guarantees **idempotency**:
 
-Go binary managed by systemd
+If the server restarts, crashes, or redeploys, reminders are **never duplicated**.
 
-Environment variables stored outside GitHub
+---
 
-GitHub Actions used for auto-deploy on main
+## Local Development Setup
 
-How It Works (End-to-End)
+### Backend (Go API + Agent)
 
-Manager adds an extended-stay guest through the web UI
-
-Guest data is stored in SQLite (guests table)
-
-A background agent:
-
-Runs on startup
-
-Runs every 24 hours after that
-
-For each guest, the agent:
-
-Computes weeks stayed from check-in date
-
-Checks if a reminder for that week already exists
-
-Sends exactly one email per guest per week
-
-Records the send in a notifications table to prevent duplicates
-
-Manager receives a clean billing reminder email with:
-
-Guest name
-
-Room number
-
-Weeks stayed
-
-Daily rate
-
-Contact info
-
-This design guarantees idempotency:
-If the server restarts, crashes, or redeploys, reminders are never duplicated.
-
-Local Development Setup
-Backend (Go API + Agent)
+```bash
 go run .
 
+```
 
-Runs the API on http://localhost:8080
+- Runs the API on `http://localhost:8080`
+- Automatically initializes SQLite (`data.db`)
+- Starts the background billing agent
 
-Automatically initializes SQLite (data.db)
+### Frontend (Local Only)
 
-Starts the background billing agent
-
-Frontend (Local Only)
+```bash
 python3 -m http.server 5500
 
+```
 
 Then open:
 
+```
 http://localhost:5500/
 
+```
 
-⚠️ When running frontend separately, CORS must be enabled in main.go
-(commented out by default, only for local testing)
+> ⚠️ When running frontend separately, CORS must be enabled in main.go
+> 
+> 
+> (commented out by default, only for local testing)
+> 
 
-Production Deployment (DigitalOcean)
-Environment Variables
+---
 
-Stored on the server, not in GitHub:
+## Production Deployment (DigitalOcean)
 
+### Environment Variables
+
+Stored **on the server**, not in GitHub:
+
+```bash
 cd /opt
 nano /etc/extended-stay.env
 
+```
 
 Example:
 
+```
 BREVO_API_KEY=your_brevo_api_key
 EMAIL_FROM=billing.notifications@yourdomain.com
 MANAGER_EMAIL=manager@example.com
 
+```
 
 Reload and restart:
 
+```bash
 systemctl daemon-reload
 systemctl restart extended-stay
 
+```
 
 Verify:
 
-systemctl show extended-stay -p Environment | tr ' ' '\n'
+```bash
+systemctl show extended-stay -p Environment |tr' ''\n'
 
-GitHub Actions Auto-Deploy
+```
 
-Every push to main triggers deployment.
+---
 
-What happens automatically:
+## GitHub Actions Auto-Deploy
 
-GitHub Action SSHs into the DigitalOcean droplet
+Every push to `main` triggers deployment.
 
-Pulls the latest code
+**What happens automatically:**
 
-Hard-resets to origin/main
+1. GitHub Action SSHs into the DigitalOcean droplet
+2. Pulls the latest code
+3. Hard-resets to `origin/main`
+4. Restarts the systemd service
 
-Restarts the systemd service
-
-name: Deploy
+```yaml
+name:Deploy
 
 on:
-  push:
-    branches: ["main"]
+push:
+branches: ["main"]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: SSH pull + restart
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DO_HOST }}
-          username: ${{ secrets.DO_USER }}
-          key: ${{ secrets.DO_SSH_KEY }}
-          script: |
+deploy:
+runs-on:ubuntu-latest
+steps:
+-name:SSHpull+restart
+uses:appleboy/ssh-action@v1.0.3
+with:
+host:${{secrets.DO_HOST}}
+username:${{secrets.DO_USER}}
+key:${{secrets.DO_SSH_KEY}}
+script: |
             set -e
             cd /opt/extended-stay
             git fetch --all
@@ -184,60 +186,72 @@ jobs:
             systemctl restart extended-stay
             systemctl status extended-stay --no-pager -l | head -n 60
 
+```
 
 No manual SSH. No manual restarts. No drift.
 
-Database Design
+---
 
-guests
+## Database Design
 
-Stores extended-stay guest details
+**guests**
 
-notifications
+- Stores extended-stay guest details
 
-Records (guest_id, period_number)
+**notifications**
 
-Enforced UNIQUE constraint
+- Records `(guest_id, period_number)`
+- Enforced UNIQUE constraint
+- Guarantees one reminder per guest per billing period
 
-Guarantees one reminder per guest per billing period
+This is what makes the system **restart-safe and duplicate-proof**.
 
-This is what makes the system restart-safe and duplicate-proof.
+---
 
-Key Design Decisions (Why This Is Solid)
+## Key Design Decisions (Why This Is Solid)
 
-SQLite
-Single-tenant, low-traffic internal tool → zero reason for Postgres overhead.
+- **SQLite**
+    
+    Single-tenant, low-traffic internal tool → zero reason for Postgres overhead.
+    
+- **systemd**
+    
+    Ensures the service:
+    
+    - Starts on boot
+    - Restarts on failure
+    - Runs unattended
+- **Background Agent**
+    
+    No cron jobs, no external schedulers, no race conditions.
+    
+- **Email to Manager Only**
+    
+    Complies with hospitality policies while preserving billing accuracy.
+    
 
-systemd
-Ensures the service:
+---
 
-Starts on boot
+## Who This Is For
 
-Restarts on failure
+- Hotel property managers
+- Front desk supervisors
+- Operations staff handling extended-stay billing
 
-Runs unattended
+This is **not** a consumer-facing app.
 
-Background Agent
-No cron jobs, no external schedulers, no race conditions.
-
-Email to Manager Only
-Complies with hospitality policies while preserving billing accuracy.
-
-Who This Is For
-
-Hotel property managers
-
-Front desk supervisors
-
-Operations staff handling extended-stay billing
-
-This is not a consumer-facing app.
 It’s an internal reliability tool.
 
-Status
+---
+
+## Status
 
 ✔ Deployed
+
 ✔ In production
+
 ✔ Restart-safe
+
 ✔ Duplicate-proof
+
 ✔ Policy-compliant
