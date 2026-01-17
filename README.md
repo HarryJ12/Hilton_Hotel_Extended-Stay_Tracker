@@ -50,7 +50,7 @@ No policy violations and no missed billing.
     - Unattended, long-running operation
 
 - **Environment-Based Configuration** ensures sensitive configuration is loaded from a secure environment file and attached to the `systemd` service so it is not exposed.
-    - Example environment file:
+    - /etc/extended-stay.env (Example environment file):
     
         ```bash
         BREVO_API_KEY=your_key_here
