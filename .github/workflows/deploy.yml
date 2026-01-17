@@ -1,22 +1,23 @@
-name: Deploy (pull on droplet)
+name: Deploy
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main"] # Deploy automatically on main branch updates
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # SSH into the DigitalOcean droplet, pull latest code, and restart the service
       - name: SSH pull + restart
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DO_HOST }}
-          username: ${{ secrets.DO_USER }}
-          key: ${{ secrets.DO_SSH_KEY }}
+          host: ${{ secrets.DO_HOST }}  # Droplet IP
+          username: ${{ secrets.DO_USER }} # user (root)
+          key: ${{ secrets.DO_SSH_KEY }} # Private SSH key
           script: |
             set -e
-            cd /opt/extended-stay
+            cd /opt/extended-stay 
             git fetch --all
             git reset --hard origin/main
             systemctl restart extended-stay

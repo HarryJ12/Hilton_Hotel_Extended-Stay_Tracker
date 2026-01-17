@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <h1>Extended Stay Tracker</h1>
+  <title>Extended Stay Tracker</title> <!-- App title shown in browser tab -->
+  <h1>Extended Stay Tracker</h1> <!-- Main page heading -->
 </head>
-  <style>
-    li {
-      margin-bottom: 20px;
-    }
-  </style>
+
+<style>
+  li {
+    margin-bottom: 20px; /* Add spacing between guest list items for readability */
+
+  }
+</style>
+
 <body>
-  <h2 style="margin-top: 50px;">Add Guests</h2>
-  <form id="guestForm">
-    <input placeholder="Name" id="name" required />
-    <input placeholder="Contact Information" id="contact" required />
-    <input placeholder="Room #" id="room" required />
-    <input placeholder="Daily Rate" id="rate" required />
-    <input type="date" id="checkin" required />
-    <button>Add</button>
+  <!-- Section: Form to add a new guest -->
+  <h2 style="margin-top: 50px;">Add Guests</h2> <!-- Subheading for the form -->
+  <form id="guestForm"> 
+    <!-- Input fields for guest details -->
+    <input placeholder="Name" id="name" required /> <!-- Name field -->
+    <input placeholder="Contact Information" id="contact" required /> <!-- Contact information field -->
+    <input placeholder="Room #" id="room" required /> <!-- Room number field -->
+    <input placeholder="Daily Rate" id="rate" required /> <!-- Daily rate field -->
+    <input type="date" id="checkin" required /> <!-- Check-in date field -->
+    <button>Add</button> <!-- Submit button -->
   </form>
 
+  <!-- Section: List of current guests -->
   <h2 style="margin-top: 50px;">Guests</h2>
-  <ul id="guestList"></ul>
+  <ul id="guestList"></ul>  <!-- Guest entries injected -->
 
-  <!-- <script src="app.js"></script> -->
+  <!-- Footer: support contact -->
+  <footer>
+    For support contact: <a href="mailto:billing.notifications44@gmail.com">billing.notifications44@gmail.com</a>
+  </footer>
+
+  <!-- Load frontend logic -->
+  <!-- <script src="app.js"></script> --> <!-- For local development -->
   <script src="/static/app.js"></script>
 </body>
+
 </html>
