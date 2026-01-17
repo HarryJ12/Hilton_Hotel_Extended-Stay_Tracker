@@ -4,7 +4,7 @@ A lightweight internal web application that helps hotel managers reliably track 
 
 ## Why This Exists
 
-At Hilton properties, *hospitality and customer-experience policies restrict the use of repeated billing reminders* for extended-stay guests.
+At Hilton properties, **hospitality and customer-experience policies restrict the use of repeated billing reminders** for extended-stay guests.
 
 That creates a real operational problem:
 
